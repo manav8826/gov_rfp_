@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: asian-paints-rfp-backend
+    env: docker
+    plan: free
+    buildCommand: docker build -t backend .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 80
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: GOOGLE_API_KEY
+        sync: false

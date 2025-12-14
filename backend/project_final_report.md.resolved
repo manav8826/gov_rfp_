@@ -1,0 +1,86 @@
+# B2B RFP Response Automation - Project Report
+
+**Date:** December 14, 2025
+**Project:** Agentic AI for RFP Analysis (EY Assignment)
+**Status:** Completed (Consulting Grade Ready)
+
+---
+
+## 1. Problem Statement
+The objective s to build an **Agentic AI System** to automate the end-to-end journey of identifying, analyzing, and responding to "Request for Proposal" (RFP) documents for a B2B cabling and services company.
+
+**Key Challenges Identified:**
+*   **Manual Effort:** Reading complex PDFs (RFPs) to extract "Scope of Supply" is time-consuming.
+*   **Matching Accuracy:** Mapping vague RFP requirements (e.g., "Cloud Hosting") to specific internal Product SKUs requires semantic understanding.
+*   **consulting Gap (Addressed):** Pure vector search is a "Black Box". Clients need to know *why* a product matched (e.g., "Voltage matched").
+*   **Strategic Gap (Addressed):** Merely finding products isn't enough. The system must assess "Right-to-Win" and "Submission Risk" to prioritize sales efforts.
+
+---
+
+## 2. Solution Architecture
+We designed a **Multi-Agent Main/Worker Architecture** powered by GenAI and Vector Search.
+
+### **The Agents**
+| Agent | Role | Technology Stack | Key Features (Consulting Grade) |
+| :--- | :--- | :--- | :--- |
+| **Sales Agent** | Intelligence Scout. | Python, Periodicity Logic | **Submission Risk Analysis** (High/Low).<br>**Strategic Fit Scoring**.<br>**Periodicity Simulation** ("Scanned 2 hours ago"). |
+| **Technical Agent** | Engineering Lead. | **Groq (Llama 3.3)** + **ChromaDB** | **Top 3 Recommendations**.<br>**Transparent Spec Breakdown** (Voltage: Match, Insulation: Match).<br>**Right-to-Win Probability** (High/Medium/Low). |
+| **Pricing Agent** | Commercial Lead. | Python Logic | **Dynamic Pricing Lookup**.<br>**Strategic Analysis Pass-through**. |
+
+---
+
+## 3. Implementation Procedure & "Consulting Grade" Enhancements
+
+### **Phase 1-2: Core AI & Infrastructure**
+*   **Stack:** FastAPI, Groq (Llama 3.3), ChromaDB.
+*   **Achievement:** Successfully parsed PDFs and matched textual descriptions (e.g., "Hosting" -> "Cloud Service") using Vector Embeddings.
+
+### **Phase 3: The "Black Box" Problem (Solved)**
+*   **Issue:** Vector distance (0.45) is abstract. It doesn't tell a human *why* a cable was chosen.
+*   **Solution: Hybrid Matching Engine.**
+    1.  **Vector Search:** Finds the "Concept".
+    2.  **Deterministic Spec Check:** We implemented a post-processing layer that compares specific attributes (`Voltage`, `Insulation`, `Service Type`).
+    *   *Result:* The API now returns: `[{"spec": "Voltage", "status": "Match", "value": "11kV"}]`.
+
+### **Phase 4: Strategic Intelligence (Solved)**
+*   **Issue:** A list of products doesn't help an Executive decide *whether* to bid.
+*   **Solution: Right-to-Win Scoring.**
+    *   We added a `strategic_analysis` block to the output.
+    *   It calculates an aggregate "Capability Score" across all line items.
+    *   *Result:* "Win Probability: High. Rationale: Strong portfolio fit. 92% Match."
+
+### **Phase 5: Sales Agent Upgrade (Solved)**
+*   **Issue:** The initial Sales Agent was just a mocked lists.
+*   **Solution: Simulation of a Real-Time Crawler.**
+    *   Added `last_scanned` timestamps.
+    *   Added **Submission Risk Logic**: "High Risk" if due date < 7 days.
+    *   *Result:* A dashboard-ready response for the Sales Team.
+
+---
+
+## 4. Final Technical Specifications
+
+### **Tech Stack**
+*   **Language:** Python 3.11+
+*   **Framework:** FastAPI (High-performance Async API)
+*   **LLM Provider:** Groq Cloud (Model: `llama-3.3-70b-versatile`)
+*   **Vector Database:** ChromaDB (Local persistent instance)
+
+### **Key Algorithms**
+1.  **Strategic Fit Calculation:**
+    ```python
+    avg_score = total_match_score / num_items
+    if avg_score > 75: win_prob = "High" # Strong Portfolio Fit
+    ```
+2.  **Hybrid Spec Matching:**
+    ```python
+    # 1. Semantic Search
+    candidates = vector_db.search(query)
+    # 2. Rule-Based Verification
+    if req['voltage'] in cand['voltage']: status = "Match"
+    ```
+
+## 5. Conclusion
+The system has evolved from a simple "PDF Reader" to a **Strategic Pre-Sales Intelligence Platform**. It not only automates the clerical work of reading RFPs but provides the **Analytical Insight** (Win Probability, Spec Gaps, Risk) required for high-level decision making.
+
+**All EY Assignment Requirements + Consulting Enhancements are Met.**
