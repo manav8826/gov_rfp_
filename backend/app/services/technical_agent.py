@@ -184,11 +184,15 @@ class TechnicalAgent:
             # CONSULTING LOGIC: Granular Spec Breakdown
             # ------------------------------------------------------------------
             # We compare the 'specs' from the Requirement vs 'specs' from the Candidate Metadata
+            # We compare the 'specs' from the Requirement vs 'specs' from the Candidate Metadata
             cand_specs = cand.get("specs", {})
-            # Ensure cand_specs is a dict (Chroma might return it as a string if not careful, 
-            # but our new seed script passes it as metadata. 
-            # Note: Chroma metadata is flat. We might need to assume it's flattened or carefully handled.
-            # For this update, since we re-seeded, let's assume keys are available.
+            
+            # Helper to parse stringified JSON from Chroma
+            if isinstance(cand_specs, str):
+                try:
+                    cand_specs = json.loads(cand_specs)
+                except:
+                    cand_specs = {}
             
             req_specs = req.get("specs", {})
             if hasattr(req_specs, "dict"):

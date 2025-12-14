@@ -26,7 +26,14 @@ class ProductVectorDB:
         """
         ids = [str(p["sku"]) for p in products]
         documents = [f"{p['name']} - {p.get('details', '')}" for p in products]
-        metadatas = products
+        metadatas = []
+        import json
+        for p in products:
+            meta = p.copy()
+            # Flatten or stringify 'specs' because Chroma metadata must be primitives
+            if "specs" in meta and isinstance(meta["specs"], dict):
+                meta["specs"] = json.dumps(meta["specs"])
+            metadatas.append(meta)
         
         self.collection.upsert(
             ids=ids,
