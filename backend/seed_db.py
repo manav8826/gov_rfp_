@@ -74,6 +74,10 @@ db.add_products(products)
 print("Seeding Complete!")
 
 # Test Search
+# Test Search
 print("\nTesting Search for 'Hosting':")
 match = db.search("We need cloud hosting servers")
-print(f"Found: {match['name']} (SKU: {match['sku']})")
+if match:
+    print(f"Found: {match[0]['name']} (SKU: {match[0]['sku']})")
+else:
+    print("No matches found.")
