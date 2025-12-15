@@ -9,14 +9,14 @@ app = FastAPI(
 )
 
 # Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# Set all CORS enabled origins (Allow All for Hackathon/Demo)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins (localhost:3000, Render, etc.)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(rfp.router, prefix=f"{settings.API_V1_STR}/rfp", tags=["rfp"])
 app.include_router(sales.router, prefix=f"{settings.API_V1_STR}/sales", tags=["sales"])
