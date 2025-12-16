@@ -21,22 +21,26 @@ class PricingAgent:
             recommendation = item.get("recommendation", {})
             sku = recommendation.get("sku")
             
-            # Base Price from Tech Agent (which gets it from ChromaDB)
-            # If not in Tech Output, fall back to internal DB
+            # Base Price
             base_price = recommendation.get("price")
             if not base_price:
                 base_price = self._get_price_for_sku(sku)
             
+            # Quantity (Default to 1 if missing)
+            qty = item.get("requirement", {}).get("quantity", 1.0)
+            
             # Service Costs (Mock logic: if 'Test' in text, add cost)
-            # Here we just add a flat testing fee for demonstration
             service_cost = self.service_rates["testing"]
             
-            line_total = base_price + service_cost
+            # Line Total = (Unit Price * Qty) + Service Cost
+            line_total = (base_price * qty) + service_cost
+            
             total_project_value += line_total
             
             # Add pricing info to the item
             item["pricing"] = {
                 "unit_price": base_price,
+                "quantity": qty,
                 "service_add_ons": service_cost,
                 "total_price": line_total
             }
