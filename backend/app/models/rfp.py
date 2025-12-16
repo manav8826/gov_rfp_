@@ -20,5 +20,6 @@ class RFPResponse(RFPBase):
 class ProcessingStatus(BaseModel):
     job_id: str
     status: str
+    stage: Optional[str] = None
     progress: int
     message: Optional[str] = None

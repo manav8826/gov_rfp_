@@ -10,7 +10,9 @@ jobs = {}
 
 def process_rfp_task(job_id: str, file_content: bytes):
     jobs[job_id]["status"] = "processing"
+    jobs[job_id]["stage"] = "technical_agent"
     jobs[job_id]["progress"] = 10
+    jobs[job_id]["message"] = "Technical Agent: Parsing PDF and extracting requirements..."
     
     try:
         from app.services.technical_agent import TechnicalAgent
@@ -19,14 +21,19 @@ def process_rfp_task(job_id: str, file_content: bytes):
         # 1. Technical Analysis
         tech_agent = TechnicalAgent()
         tech_result = tech_agent.process_rfp(file_content)
+        
         jobs[job_id]["progress"] = 50
+        jobs[job_id]["stage"] = "pricing_agent"
+        jobs[job_id]["message"] = "Pricing Agent: Calculating BOM and Commercials..."
         
         # 2. Pricing Calculation
         pricing_agent = PricingAgent()
         final_result = pricing_agent.calculate_pricing(tech_result)
         
         jobs[job_id]["status"] = "completed"
+        jobs[job_id]["stage"] = "completed"
         jobs[job_id]["progress"] = 100
+        jobs[job_id]["message"] = "Analysis Complete."
         jobs[job_id]["result"] = final_result
         
     except Exception as e:
@@ -73,7 +80,9 @@ async def get_status(job_id: str):
     return ProcessingStatus(
         job_id=job_id,
         status=job["status"],
-        progress=job["progress"]
+        stage=job.get("stage"),
+        progress=job["progress"],
+        message=job.get("message")
     )
 
 @router.get("/{job_id}/result")
